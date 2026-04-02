@@ -1,0 +1,1 @@
+import{u as l,j as e}from"./index-B5qqyIUh.js";const t=()=>{const s=l(r=>r.AuthSlice.user);return e.jsx(e.Fragment,{children:e.jsxs("ul",{children:[e.jsxs("li",{children:["firstname: ",s?.firstname]}),e.jsxs("li",{children:["lastname: ",s?.lastname]}),e.jsxs("li",{children:["email: ",s?.email]})]})})};export{t as default};
