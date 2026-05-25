@@ -1,8 +1,7 @@
 import {  lazy, Suspense } from "react";
 import ProteceRoute from "../COMPONENTS/auth/proteceRoute"
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-
- //pages
+const basename = import.meta.env.BASE_URL; //pages
 const Home = lazy(() => import("../pages/Home"))
 const Categories = lazy(() => import("../pages/Categories"));
 const Products = lazy(() => import("../pages/Products"));
@@ -96,7 +95,7 @@ if(typeof params.id !== 'string'||
    ]
   }
 ], {
-  basename: "/e-Commerce" 
+  basename: basename
 });
 
 export default function AppRou(){
