@@ -93,10 +93,11 @@ if(typeof params.id !== 'string'||
   ]
 }
   
-    ],
-  },
-
-]);
+   ]
+  }
+], {
+  basename: "/e-Commerce" 
+});
 
 export default function AppRou(){
 
