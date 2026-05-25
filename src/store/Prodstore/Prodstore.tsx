@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import Actprodcy from "./act/ActProdstore";
 interface Cateprodstorestate {
-  records: { id: number; title: string; prefix: string; img: string }[];
+  records: { id: number; title: string; prefix: string; img: string ,price:number ,max:number}[];
   loading: "idle" | "pending" | "succeeded" | "failed";
   error: string | null;
 }
@@ -38,6 +38,6 @@ reducers: {
   },
 });
 
-export const { Cleanup } = Prodstore.actions
+export const { cleanup } = Prodstore.actions
 export  { Actprodcy } 
 export default Prodstore.reducer;

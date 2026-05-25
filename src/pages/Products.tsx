@@ -1,30 +1,37 @@
 ///
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/GridLegacy';
 // import { useTheme } from '@mui/material/styles';
 import { useEffect } from 'react';
 import {useAppDispatch ,useAppSelector} from '../store/hook'
 import { useParams } from 'react-router-dom';
 
 //
-import {Actprodcy,Cleanup  } from '../store/Prodstore/Prodstore'
+import {Actprodcy,cleanup  } from '../store/Prodstore/Prodstore'
 
-import {ProductsComponent } from "../COMPONENTS/e-comers";
+import {ProductsComponent } from "../COMPONENTS/e-comers/index";
+import Loading from '../COMPONENTS/feedback/loading/loading';
+import Gridl from '../COMPONENTS/comon/gridlist/Grid';
 export default function Products() {
 
-  ///loading, error
 const params= useParams()
-  const {records,} = useAppSelector(state => state.Prodstore)
+  const {records,loading, error} = useAppSelector(state => state.Prodstore)
+
+
+const cartItrm = useAppSelector(state => state.cartstore.items)
+
+  const cartItemsCount = records.map((e)=>({...e,qua:cartItrm[e.id] || 0}))
 
   const dispatch = useAppDispatch()
 
   useEffect(()=>{
+
+
+
     if(params.id && typeof params.id =="string"){
     const id = params.id
     dispatch(Actprodcy(id))
     }
     return ()=>{
-      dispatch(Cleanup())
+      dispatch(cleanup())
     }
 
   },[dispatch,params])
@@ -32,16 +39,12 @@ const params= useParams()
 
 
   return (
-  
-        <Box sx={{ flexGrow: 1 }}>
-      <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 1, sm: 8, md: 12 }}>
-        {records.map((record) => (
-          <Grid item xs={4} sm={4} md={4} key={record.id}>
-         <ProductsComponent {...record}/>
-          </Grid>
-        ))}
-      </Grid>
-    </Box>
+  <Loading loading={loading} error={error}>
+    <Gridl 
+  records={cartItemsCount}  
+  renderitem={(record) => <ProductsComponent {...record} />} 
+/>
+      </Loading>
   );
  
 }

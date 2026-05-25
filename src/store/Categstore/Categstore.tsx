@@ -15,8 +15,13 @@ const initialState: Categstorestate = {
 export const Categstore = createSlice({
   name: "Categstore",
   initialState,
-  reducers: {},
+  reducers: {
 
+clenn: (state) => {
+    state.records = [];
+
+  },
+  },
   extraReducers: (builder) => {
     builder.addCase(Actgetcateg.pending, (state) => {
       state.loading = "pending";
@@ -35,4 +40,5 @@ export const Categstore = createSlice({
 });
 
 export  { Actgetcateg } 
+export const { clenn } = Categstore.actions;
 export default Categstore.reducer;

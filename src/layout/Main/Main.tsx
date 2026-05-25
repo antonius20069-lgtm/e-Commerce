@@ -62,6 +62,7 @@ export default function Main() {
       <React.Fragment>
         <CssBaseline />
         <Container
+         
           sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
         >
           <Header mode={mode} setMode={setmodee} />
@@ -69,8 +70,9 @@ export default function Main() {
 <Outlet />
 
           </div>
-          <Footer />
+        
         </Container>
+          <Footer />
       </React.Fragment>
     </ThemeProvider>
   );

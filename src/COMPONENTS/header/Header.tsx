@@ -9,6 +9,15 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import MenuItem from "@mui/material/MenuItem";
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import Avatar from '@mui/material/Avatar';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import Divider from '@mui/material/Divider';
+import Logout from '@mui/icons-material/Logout';
+import Tooltip from '@mui/material/Tooltip';
+
+// 
+
 import Link from '@mui/material/Link';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCartOutlined';
 const pages = ["home", "categories", "about"];
@@ -18,14 +27,30 @@ import { styled } from '@mui/material/styles';
 import Switch from "./button/butt";
 import { useTheme } from '@mui/material/styles';
 import { Link as RouterLink } from 'react-router-dom';
-function Header({
+import { useAppSelector, useAppDispatch } from "../../store/hook";
+import { getcarttotalquantity } from "../../store/cart/cartstore";
+import { ActgetFullInfo } from "../../store/wishlist/wishlist";
+
+import "./head.css"
+
+//
+import { useState ,useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
+import {Actauthlogout} from "../../store/auth/authstor";
+  function Header({
+
+
   mode,
   setMode,
 }: {
   mode: "light" | "dark";
   setMode: React.Dispatch<"light" | "dark">;
 }){
+
+
+  
 const theme = useTheme()
+const navigate = useNavigate();
 
 const CartBadge = styled(Badge)`
   & .${badgeClasses.badge} {
@@ -35,26 +60,60 @@ const CartBadge = styled(Badge)`
 `;
 
 
+
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null,
   );
-
+  const dispatch = useAppDispatch();
+  const totalQuantity = useAppSelector(state => state.wishliststore.items.length);
+  const {accesstoken ,user} = useAppSelector(state => state.AuthSlice);
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
   };
  
+
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
 
+ 
+const cartItemsCount = useAppSelector(getcarttotalquantity);
+const [pump, setPump] = useState(false);
+
+const quantity = `${ pump ? "pumpp" : "" }`
+useEffect(() => {
+setPump(true);
+
+const timer = setTimeout(() => {
+  setPump(false);
+}, 2000);
+return () => clearTimeout(timer);
+},[cartItemsCount])
+
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  useEffect(() => {
+    if(accesstoken){
+dispatch(ActgetFullInfo("products"))
+
+    }
+  }, [dispatch,accesstoken])
 
   return (      
-    <Box>
+    <Box  >
     <Typography 
     style={{color:theme.palette.ant.tex}}
     sx={{display:{md:"none",sm:"none"}}}  variant="h6">
  e-{" "}
               <span
+
                 style={{
                   padding: "10px",
                   color: theme.palette.ant.to,
@@ -67,12 +126,12 @@ const CartBadge = styled(Badge)`
               </span>
 
                     </Typography>
-    <Box sx={{mt:{xs:2,md:0}}}>
-      <AppBar style={{borderRadius:"5px"}} position="static">
+    <Box  sx={{ mt:{xs:2,md:0}}}>
+      <AppBar style={{borderRadius:"10px" }} position="static">
    
 
-        <Container style={{background:theme.palette.ant.back ,borderRadius:"5px"}}>
-          <Toolbar disableGutters>
+        <Container style={{  background:theme.palette.ant.back  , borderRadius:"5px"}}>
+          <Toolbar  disableGutters>
             <Box sx={{ mr: 3 }}>
               <Switch mode={mode} setMode={setMode} />
             </Box>
@@ -184,7 +243,8 @@ const CartBadge = styled(Badge)`
                 </Button>
               ))}
             </Box>
-            <Box style={{color:theme.palette.ant.to, display:"flex", gap:"15px" ,alignItems:"center" }} sx={{ flexGrow: 0 }}>
+            {accesstoken === null ? <>
+             <Box style={{color:theme.palette.ant.to, display:"flex", gap:"15px" ,alignItems:"center" }} sx={{ flexGrow: 0 }}>
              <Link 
   component={RouterLink} 
   to="/login" 
@@ -201,15 +261,125 @@ const CartBadge = styled(Badge)`
   sx={{ color: "white" }}
 >register
 </Link>
-              
-            </Box>
+             </Box>
+            </> :
+            // token////////////
+            <>
+            <React.Fragment>
+      <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
+
+        <Tooltip title= { user?.firstname}>
+          <IconButton
+            onClick={handleClick}
+            size="small"
+            sx={{ ml: 2 }}
+            aria-controls={open ? 'account-menu' : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? 'true' : undefined}
+          >
+            <Avatar sx={{ background:theme.palette.ant.to ,color:"white", width: 32, height: 32 }}></Avatar>
+          </IconButton>
+        </Tooltip>
+      </Box>
+      <Menu
+        anchorEl={anchorEl}
+        id="account-menu"
+        open={open}
+        onClose={handleClose}
+        onClick={handleClose}
+        slotProps={{
+          paper: {
+            elevation: 0,
+            sx: {
+              overflow: 'visible',
+              filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+              mt: 1.5,
+              '& .MuiAvatar-root': {
+                width: 32,
+                height: 32,
+                ml: -0.5,
+                mr: 1,
+              },
+              '&::before': {
+                content: '""',
+                display: 'block',
+                position: 'absolute',
+                top: 0,
+                right: 14,
+                width: 10,
+                height: 10,
+                bgcolor: 'background.paper',
+                transform: 'translateY(-50%) rotate(45deg)',
+                zIndex: 0,
+              },
+            },
+          },
+        }}
+        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+      >
+           <Link 
+  component={RouterLink} 
+  to="/Profile" 
+  underline="none" 
+  sx={{ color: "white" }}
+>
+        <MenuItem onClick={handleClose}>
+          <Avatar /> Profile
+        </MenuItem>
+        </Link>
+
+                   <Link 
+  component={RouterLink} 
+  to="/profile/orders" 
+  underline="none" 
+  sx={{ color: "white" }}
+>
+     
+        <MenuItem onClick={handleClose}>
+          <Avatar /> orders
+        </MenuItem>
+        </Link>
+
+        <Divider />
+       
+   <Link 
+  component={RouterLink} 
+  to="/" 
+  underline="none" 
+  sx={{ color: "white" }}
+>
+
+        <MenuItem   onClick={ () => {
+        
+          dispatch(Actauthlogout())
+          }} >
+          <ListItemIcon>
+            <Logout fontSize="small" />
+          </ListItemIcon>
+          Logout
+        </MenuItem>
+</Link>
+
+
+      </Menu>
+    </React.Fragment>
+            </>}
+           
+{/*  */}
+        
           </Toolbar>
         </Container>
       </AppBar>
     </Box>
-    <IconButton style={{marginTop:"10px",marginLeft:"10px"}}>
-  <ShoppingCartIcon fontSize="small" />
-  <CartBadge badgeContent={100} color="primary" overlap="circular" />
+    <IconButton  onClick={() => navigate("/cart")} style={{marginTop:"10px",marginLeft:"10px"}}>
+  <ShoppingCartIcon  fontSize="small" />
+  <CartBadge className={quantity} badgeContent={cartItemsCount} color="primary" overlap="circular" />
+</IconButton>
+
+    <IconButton  onClick={() => navigate("/wishlist")} style={{marginTop:"10px",marginLeft:"15px"}}>
+  <FavoriteIcon fontSize="small" />
+  <CartBadge className={quantity} badgeContent={totalQuantity} color="primary" overlap="circular" />
 </IconButton>
     </Box>
   );
